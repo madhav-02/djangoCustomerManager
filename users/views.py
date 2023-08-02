@@ -1,16 +1,30 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView
+from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
-
+from .models import Profile, Customer
+from django.http import HttpResponse
 
 def home(request):
-    return render(request, 'users/home.html')
+    user = request.user
+    userProfile = Profile.objects.get(user = user)
+    #print(type(userProfile.values()))
+    # newcustomer = Customer.objects.create(name='ran',id=377)
+    # userProfile.customers.add(newcustomer)
+    # userProfile.save()
+    # print(userProfile.values())
+    # newcustomer.save()
+    # userProfile.customers.add(newcustomer)
+    # userProfile.customers.add(newcustomer)
+    # print(userProfile.objects.all())
+    allcustomers = userProfile.customers.all()
+    # print(allcustomers)
+    return render(request, 'users/home.html', {'customers' : allcustomers})
 
 
 class RegisterView(View):
@@ -49,35 +63,9 @@ class CustomLoginView(LoginView):
     form_class = LoginForm
 
     def form_valid(self, form):
-        remember_me = form.cleaned_data.get('remember_me')
-
-        if not remember_me:
-            # set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
-            self.request.session.set_expiry(0)
-
-            # Set session as modified to force data updates/cookie to be saved.
-            self.request.session.modified = True
-
-        # else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE" defined in settings.py
+        self.request.session.set_expiry(0)
+        self.request.session.modified = True
         return super(CustomLoginView, self).form_valid(form)
-
-
-class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
-    template_name = 'users/password_reset.html'
-    email_template_name = 'users/password_reset_email.html'
-    subject_template_name = 'users/password_reset_subject'
-    success_message = "We've emailed you instructions for setting your password, " \
-                      "if an account exists with the email you entered. You should receive them shortly." \
-                      " If you don't receive an email, " \
-                      "please make sure you've entered the address you registered with, and check your spam folder."
-    success_url = reverse_lazy('users-home')
-
-
-class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
-    template_name = 'users/change_password.html'
-    success_message = "Successfully Changed Your Password"
-    success_url = reverse_lazy('users-home')
-
 
 @login_required
 def profile(request):
@@ -95,3 +83,24 @@ def profile(request):
         profile_form = UpdateProfileForm(instance=request.user.profile)
 
     return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
+
+@login_required
+def addCustomer(request):
+    
+    if request.method == 'POST':
+        allcustomers={}
+        print("hee")
+        customerName = request.POST['customername']
+        customerId = request.POST['customerid']
+        print(customerName, customerId)
+        user = request.user
+        userProfile = Profile.objects.get(user = user)
+        newcustomer = Customer.objects.create(name=customerName,id=customerId)
+        userProfile.customers.add(newcustomer)
+        userProfile.save()
+        allcustomers = userProfile.customers.all()
+        return render(request, 'users/home.html', {'customers' : allcustomers})
+    else:
+        return render(request, 'users/addcustomer.html')
+    
+

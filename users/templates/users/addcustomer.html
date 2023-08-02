@@ -1,5 +1,5 @@
 {% extends "users/base.html" %}
-{% block title %} Login Page {% endblock title%}
+{% block title %} Add Customer{% endblock title%}
 {% block content %}
     <div class="form-content my-3 p-3">
         <div class="container">
@@ -7,52 +7,36 @@
                 <div class="col-lg-5">
                     <div class="card shadow-lg border-0 rounded-lg mt-0 mb-3">
                         <div class="card-header justify-content-center">
-                          <h3 class="font-weight-light my-1 text-center">Login</h3>
+                          <h3 class="font-weight-light my-1 text-center">Add Customers here</h3>
                         </div>
-                        {% if form.errors %}
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <div id="form_errors">
-                                    {% for key, value in form.errors.items %}
-                                        <strong>{{ value }}</strong>
-                                    {% endfor %}
-                                </div>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        {% endif %}
+                        
                         <div class="card-body">
                             <form method="POST">
                                 {% csrf_token %}
                                 <div class="form-row">
                                     <div class="col-md-10 offset-md-1">
                                         <div class="form-group">
-                                            <label class="small mb-1">Username</label>
-                                            {{ form.username }}
+                                            <label class="small mb-1">Customer Name</label>
+                                            <input type="text" name="customername">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-10 offset-md-1">
                                         <div class="form-group">
-                                          <label class="small mb-1">Password</label>
-                                          {{ form.password }}
+                                          <label class="small mb-1">Customer Id</label>
+                                          <input type="text" name="customerid">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-10 offset-md-1">
                                         <div class="form-group mt-0 mb-1">
-                                          <button name="login" class="col-md-12 btn btn-dark" id="login">Sign in</button>
+                                          <button type="submit" class="col-md-12 btn btn-dark" id="login">Add</button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div class="card-footer text-center">
-                            <div class="small">
-                                <a href="{% url 'users-register' %}">Don't have an account yet? Go to signup</a><br>
-                            </div>
                         </div>
                     </div>
                 </div>
