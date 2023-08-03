@@ -1,0 +1,24 @@
+{% extends "users/base.html" %}
+{% block title %} Add File{% endblock title%}
+{% block content %}
+<h1>Upload a File</h1>
+<div class="card-body">
+    <form method="POST">
+        {% csrf_token %}
+
+        <form method="post" >
+            {% csrf_token %}
+            <label > Filename</label>
+            <br>
+            <input type="text" name="name">
+            <br>
+            <input type="file" name="file_upload" id="fileInput">
+            <br>
+            <input type="submit" value="Upload">
+        </form>
+
+       
+    </div>
+</div>
+
+{% endblock content %}

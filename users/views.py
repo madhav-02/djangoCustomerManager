@@ -7,23 +7,14 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
-from .models import Profile, Customer
+from .models import Profile, Customer, File
 from django.http import HttpResponse
+from .forms import FileUploadForm
 
 def home(request):
     user = request.user
     userProfile = Profile.objects.get(user = user)
-    #print(type(userProfile.values()))
-    # newcustomer = Customer.objects.create(name='ran',id=377)
-    # userProfile.customers.add(newcustomer)
-    # userProfile.save()
-    # print(userProfile.values())
-    # newcustomer.save()
-    # userProfile.customers.add(newcustomer)
-    # userProfile.customers.add(newcustomer)
-    # print(userProfile.objects.all())
     allcustomers = userProfile.customers.all()
-    # print(allcustomers)
     return render(request, 'users/home.html', {'customers' : allcustomers})
 
 
@@ -102,5 +93,37 @@ def addCustomer(request):
         return render(request, 'users/home.html', {'customers' : allcustomers})
     else:
         return render(request, 'users/addcustomer.html')
+    
+@login_required
+def addFile(request, name):
+    if(request.method == 'POST'):
+        print("Inside addFile view")
+        print(request.POST['name'])
+        file = request.FILES['file_upload']
+        if file:
+            print('present')
+        else:
+            print('not present')
+    return render(request, 'users/addfile.html')
+
+@login_required
+def viewFiles(request, name):
+    user = request.user
+    context = {'name' : user, 'customername': name}
+    print(name)
+    userProfile = Profile.objects.get(user = user)
+    print(userProfile)
+    customer = userProfile.customers.get(name = name)
+    customerFilesQS = File.objects.filter(customer = customer)
+    customerFiles = []
+    for customerFile in customerFilesQS:
+        customerFiles.append(customerFile)
+        print(customerFile.file)
+    print(customerFiles)
+
+    return render(request, 'users/fileView.html', context)
+
+
+
     
 

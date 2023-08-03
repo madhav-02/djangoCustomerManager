@@ -12,7 +12,8 @@
                 <div class="form-row">
                     <div class="col-md-10 offset-md-1">
                         <div class="form-group mt-0 mb-1">
-                        <button name="login" class="col-md-4 btn btn-light" id="login">{{customer.name}}</button>
+                        <!-- <button name="login" class="col-md-4 btn btn-light" id="login">{{customer.name}}</button> -->
+                        <a class="btn btn-primary btn-lg" href="{% url 'view-files' customer.name %}" role="button">{{customer.name}}</a>
                         </div>
                     </div>
                 </div>

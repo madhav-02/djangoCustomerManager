@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import File
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from .models import Profile
@@ -86,3 +87,9 @@ class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['avatar', 'bio']
+
+class FileUploadForm(forms.ModelForm):
+    
+    class Meta:
+        model = File
+        fields = '__all__'
